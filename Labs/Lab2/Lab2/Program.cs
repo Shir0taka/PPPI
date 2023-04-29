@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using Newtonsoft.Json;
 using System.Runtime.ExceptionServices;
+using System.Diagnostics;
+using Microsoft.SqlServer.Server;
 
 namespace Lab2
 {
@@ -26,16 +28,22 @@ namespace Lab2
             return _random.Next(min, max);
         }
     }
-    //Email Sender API
-    public class EmailSender
+    //Time API
+    public class Time
     {
-        public void SendEmail(string from, string to, string subject, string body)
+        public DateTime GetCurrentDate()
         {
-            MailMessage mail = new MailMessage(from, to, subject, body);
-            SmtpClient client = new SmtpClient("smtp.gmail.com", 587);
-            client.Credentials = new System.Net.NetworkCredential("your_email@gmail.com", "your_password");
-            client.EnableSsl = true;
-            client.Send(mail);
+            return DateTime.Now;
+        }
+
+        public DateTime AddTime(DateTime time, TimeSpan duration)
+        {
+            return time.Add(duration);
+        }
+
+        public TimeSpan GetDuration(DateTime start, DateTime end)
+        {
+            return end - start;
         }
     }
     //File System API
@@ -49,47 +57,25 @@ namespace Lab2
             }
         }
 
-        public void WriteToFile(string path, string text)
+        public void WriteToFile(string name, string text)
         {
-            File.WriteAllText(path, text);
+            File.WriteAllText(name, text);
         }
     }
-    //Weather API
-    public class WeatherAPI
+    //String Manipulation API
+    public class StringRofls
     {
-        private const string API_KEY = "42093ba7-121f-4220-8868-c364e03d085e";
-        private const string BASE_URL = "http://api.openweathermap.org/data/2.5/weather?q=";
-
-        public Weather GetWeather(string city)
+        public string Reverse(string str)
         {
-            using (var client = new HttpClient())
-            {
-                string url = BASE_URL + city + "&appid=" + API_KEY;
-                HttpResponseMessage response = client.GetAsync(url).Result;
-
-                if (response.IsSuccessStatusCode)
-                {
-                    string json = response.Content.ReadAsStringAsync().Result;
-                    Weather weather = JsonConvert.DeserializeObject<Weather>(json);
-                    return weather;
-                }
-                else
-                {
-                    return null;
-                }
-            }
+            char[] charArray = str.ToCharArray();
+            Array.Reverse(charArray);
+            return new string(charArray);
         }
-    }
-    
-    public class Weather
-    {
-        public string Name { get; set; }
-        public Main Main { get; set; }
-    }
 
-    public class Main
-    {
-        public float Temp { get; set; }
+        public string Concatenate(string str1, string str2)
+        {
+            return str1 + str2;
+        }
     }
     //Calculator API
     public class Calc
@@ -116,7 +102,7 @@ namespace Lab2
                 throw new DivideByZeroException();
             }
 
-            return a;
+            return a / b;
         }
     }
 
@@ -130,9 +116,9 @@ namespace Lab2
             {
                 Console.WriteLine("Choose API:\n" +
                     "1. Random API\n" +
-                    "2. Email sender API\n" +
+                    "2. Time API\n" +
                     "3. File system API\n" +
-                    "4. Weather API\n" +
+                    "4. String Manipulation API\n" +
                     "5. Calculator API\n" +
                     "0. Exit");
 
@@ -145,21 +131,102 @@ namespace Lab2
                         break;
                     case 1:
                         RndNumGen rnd = new RndNumGen();
+
                         Console.WriteLine("Enter min num: ");
                         int first = int.Parse(Console.ReadLine());
+
                         Console.WriteLine("Enter max num: ");
                         int second = int.Parse(Console.ReadLine());
+
                         Console.Clear();
                         Console.WriteLine($"Result: {rnd.GenRndNum(first, second)} \n");
                         break;
                     case 2:
+                        Time time = new Time();
+                        Console.WriteLine($"Current date is {time.GetCurrentDate()} \n");
 
+                        Console.WriteLine("Set duration: ");
+                        DateTime start = DateTime.Parse(Console.ReadLine());
+                        DateTime end = DateTime.Parse(Console.ReadLine());
+                        Console.WriteLine($"This duration is {time.GetDuration(start, end)} \n");
+
+                        Console.WriteLine("Set time: ");
+                        DateTime new_Time = DateTime.Parse(Console.ReadLine());
+                        Console.WriteLine("Set duration days: ");
+                        TimeSpan dur = TimeSpan.Parse(Console.ReadLine());
+
+                        Console.Clear();
+                        Console.WriteLine($"Time {time.AddTime(new_Time, dur)} added \n");
+                        break;
                     case 3:
+                        Console.WriteLine("Enter path to create a directory: ");
+                        string file_path = Console.ReadLine();
 
+                        if (file_path == "skip")
+                        { }else
+                        {
+                            FileSystem path = new FileSystem();
+                            path.CreateDir(file_path);
+                            Console.WriteLine($"Directory \"{file_path}\" successfully created!");
+                        }
+
+                        FileSystem file = new FileSystem();
+                        Console.WriteLine("Enter name file: ");
+                        string file_name = Console.ReadLine();
+
+                        Console.WriteLine("What write in the file?: ");
+                        string text = Console.ReadLine();
+
+                        file.WriteToFile(file_name, text);
+
+                        Console.Clear();
+                        Console.WriteLine($"File {file_name} created/redacted!\n");
+                        break;
                     case 4:
+                        StringRofls rofl = new StringRofls();
 
+                        Console.WriteLine("Enter you line: ");
+                        string my_Line = Console.ReadLine();
+                        Console.WriteLine($"Reversed line: {rofl.Reverse(my_Line)} \n");
+
+                        Console.WriteLine("Enter first part: ");
+                        string part_First = Console.ReadLine();
+                        Console.WriteLine("Enter second part: ");
+                        string part_Second = Console.ReadLine();
+
+                        Console.Clear();
+                        Console.WriteLine($"Concatenation result: {rofl.Concatenate(part_First, part_Second)} \n");
+                        break;
                     case 5:
+                        Calc math = new Calc();
 
+                        Console.WriteLine("Enter numbers: ");
+                        int a = int.Parse(Console.ReadLine());
+                        int b = int.Parse(Console.ReadLine());
+
+                        Console.WriteLine("Choose operation: ");
+                        char oper = Console.ReadLine()[0];
+
+                        switch (oper)
+                        {
+                            case '+':
+                                Console.Clear();
+                                Console.WriteLine($"Result: {math.Add(a, b)} \n");
+                                break;
+                            case '-':
+                                Console.Clear();
+                                Console.WriteLine($"Result: {math.Subtract(a, b)} \n");
+                                break;
+                            case '*':
+                                Console.Clear();
+                                Console.WriteLine($"Result: {math.Multiply(a, b)} \n");
+                                break;
+                            case '/':
+                                Console.Clear();
+                                Console.WriteLine($"Result: {math.Divide(a, b)} \n");
+                                break;
+                        }
+                        break;
                     default:
                         Console.WriteLine("Incorrect input!");
                         break;
