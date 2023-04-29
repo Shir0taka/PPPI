@@ -110,6 +110,7 @@ namespace Lab2
     {
         static void Main(string[] args)
         {
+            ConsoleKeyInfo cki;
             bool exit = false;
 
             while (!exit)
@@ -137,9 +138,14 @@ namespace Lab2
 
                         Console.WriteLine("Enter max num: ");
                         int second = int.Parse(Console.ReadLine());
-
-                        Console.Clear();
                         Console.WriteLine($"Result: {rnd.GenRndNum(first, second)} \n");
+
+                        Console.WriteLine("Press 'Enter' to continue");
+                        cki = Console.ReadKey();
+                        if(cki.Key == ConsoleKey.Enter)
+                        {
+                            Console.Clear();
+                        }
                         break;
                     case 2:
                         Time time = new Time();
@@ -154,14 +160,18 @@ namespace Lab2
                         DateTime new_Time = DateTime.Parse(Console.ReadLine());
                         Console.WriteLine("Set duration days: ");
                         TimeSpan dur = TimeSpan.Parse(Console.ReadLine());
-
-                        Console.Clear();
                         Console.WriteLine($"Time {time.AddTime(new_Time, dur)} added \n");
+
+                        Console.WriteLine("Press 'Enter' to continue");
+                        cki = Console.ReadKey();
+                        if (cki.Key == ConsoleKey.Enter)
+                        {
+                            Console.Clear();
+                        }
                         break;
                     case 3:
                         Console.WriteLine("Enter path to create a directory: ");
                         string file_path = Console.ReadLine();
-
                         if (file_path == "skip")
                         { }else
                         {
@@ -176,11 +186,15 @@ namespace Lab2
 
                         Console.WriteLine("What write in the file?: ");
                         string text = Console.ReadLine();
-
                         file.WriteToFile(file_name, text);
-
-                        Console.Clear();
                         Console.WriteLine($"File {file_name} created/redacted!\n");
+
+                        Console.WriteLine("Press 'Enter' to continue");
+                        cki = Console.ReadKey();
+                        if (cki.Key == ConsoleKey.Enter)
+                        {
+                            Console.Clear();
+                        }
                         break;
                     case 4:
                         StringRofls rofl = new StringRofls();
@@ -193,9 +207,14 @@ namespace Lab2
                         string part_First = Console.ReadLine();
                         Console.WriteLine("Enter second part: ");
                         string part_Second = Console.ReadLine();
-
-                        Console.Clear();
                         Console.WriteLine($"Concatenation result: {rofl.Concatenate(part_First, part_Second)} \n");
+
+                        Console.WriteLine("Press 'Enter' to continue");
+                        cki = Console.ReadKey();
+                        if (cki.Key == ConsoleKey.Enter)
+                        {
+                            Console.Clear();
+                        }
                         break;
                     case 5:
                         Calc math = new Calc();
@@ -210,21 +229,24 @@ namespace Lab2
                         switch (oper)
                         {
                             case '+':
-                                Console.Clear();
                                 Console.WriteLine($"Result: {math.Add(a, b)} \n");
                                 break;
                             case '-':
-                                Console.Clear();
                                 Console.WriteLine($"Result: {math.Subtract(a, b)} \n");
                                 break;
                             case '*':
-                                Console.Clear();
                                 Console.WriteLine($"Result: {math.Multiply(a, b)} \n");
                                 break;
                             case '/':
-                                Console.Clear();
                                 Console.WriteLine($"Result: {math.Divide(a, b)} \n");
                                 break;
+                        }
+
+                        Console.WriteLine("Press 'Enter' to continue");
+                        cki = Console.ReadKey();
+                        if (cki.Key == ConsoleKey.Enter)
+                        {
+                            Console.Clear();
                         }
                         break;
                     default:
