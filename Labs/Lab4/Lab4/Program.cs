@@ -52,7 +52,6 @@ namespace Lab4
             }
         }
 
-
         static void Main(string[] args)
         {
             Type type = typeof(Book);
